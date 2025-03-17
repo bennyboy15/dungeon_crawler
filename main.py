@@ -1,8 +1,7 @@
 from enum import Enum
 from random import randint
 class Map:
-    def __init__(self, height, width, player_symbol='O'):
-        self.__player_symbol = player_symbol
+    def __init__(self, height, width):
         self.grid = self.__generate_initial_map(height,width)
         self.__width = width
         self.__height = height
@@ -14,7 +13,7 @@ class Map:
         map = []
         for i in range(height):
             map.append(['-'] * width)
-        map[0][0] = self.__player_symbol
+        map[0][0] = "O"
         return map
 
     def display_map(self):
@@ -50,6 +49,9 @@ class Item:
         self.text_color = None
         self.rarity = self.generate_rarity()
 
+    def generate_stats(self):
+        pass
+
     def generate_type(self):
         potential_type = list(ItemType)
         random_val = randint(0,len(potential_type)-1)
@@ -70,14 +72,46 @@ class Item:
         return Rarity.BROKEN
 
     def __repr__(self):
-        return f"{self.text_color}{self.rarity.value} {self.type.value} item!\033[0m"
+        return f"{self.text_color}{self.rarity.value}\033[0m {self.type.value} item!"
     
+class Player_Class(Enum):
+    WARRIOR = "Warrior"
+    MAGE = "Mage"
+    ARCHER = "Archer"
+    TANK = "Tank"
+class Player:
+    def __init__(self, name: str, player_class: Player_Class):
+        self.name = name
+        self.player_class = player_class
+        self.position = [0][0]
+        
+        self.level = 1
+        self.exp = 0
+
+        self.health = 5 # change this
+        self.armour = 5 # change this
+        self.attack = 5 # change this
+        self.mana = 5 # change this
+
+        self.inventory = self.starting_items()
+        self.equipped = [] # change this
+
+    def move(self, action):
+        pass
+
+    def starting_items(self):
+        pass
+
+    def display_inventory(self):
+        pass
+
+    def display_equipped(self):
+        pass
+
+    def equip_item(self):
+        pass
+
+
 map = Map(5,18)
 map.display_map()
 
-items = []
-for i in range(100):
-    items.append(Item())
-
-for item in items:
-    print(item)
