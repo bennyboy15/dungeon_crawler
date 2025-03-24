@@ -96,22 +96,114 @@ class Player:
         self.inventory = self.starting_items()
         self.equipped = [] # change this
 
-    def move(self, action):
+    def move(self, action:str):
         pass
+
+    def is_alive(self):
+        return self.health > 0
+
+    def die(self):
+        # Reset player back to start of current dungeon, reset map + respawn enemies
+        pass
+
+    def take_dmg(self, dmg:int):
+        self.health -= dmg
+        if self.is_alive() == False:
+            self.die()
 
     def starting_items(self):
         pass
 
     def display_inventory(self):
-        pass
+        print("------------------ ** INVENTORY ** ------------------")
+        for item in self.inventory:
+            print(item)
 
     def display_equipped(self):
         pass
 
-    def equip_item(self):
+    def display_player_info(self):
+        print(f"Character: {self.name} | Class: {self.player_class.value} | Lvl: {self.level}")
+
+    def equip_item(self, item):
         pass
 
+class Enemy_Type(Enum):
+    BOSS = "BOSS"
+    ELITE = "ELITE"
+    COMMON = "ENEMY"
+class Enemy:
+    def __init__(self, name, health, dmg, armour, enemy_type):
+        self.name = name
+        self.health = health
+        self.dmg = dmg
+        self.armour = armour
+        self.enemy_type = enemy_type
+
+    def attack(self, player:Player):
+        player.take_dmg(self.dmg)
+
+    def take_dmg(self, dmg:int):
+        self.health -= dmg
+        if self.is_alive() != True: # DEAD
+            self.die()
+
+    def is_alive(self):
+        return self.health > 0
+    
+    def die(self): # Need to give exp, drop loot and remove enemy from map
+        pass 
+
+    def __str__(self):
+        return (f"{self.enemy_type.value} {self.name} (Health:{self.health} Attack:{self.dmg} Armour:{self.armour})")
+
+class Game:
+    def __init__(self, player):
+        self.is_running = True
+        self.player = player
+
+    def menu(self):
+        return f"-------------------------- ** MENU ** --------------------------\nWhat action would you like to take: Move[1] Shop[2] Inventory[3] Save & Quit[4] "
+
+    def player_input(self):
+        choice = input(self.menu())
+        print()
+        match choice:
+            case "1":
+                self.move_input()
+            case "2":
+                pass
+            case "3":
+                player.display_inventory()
+                player.display_equipped()
+            case "4":
+                # Add a save function here
+                print("** Thanks for playing! **")
+                self.is_running = False
+        print()
+
+    def move_input(self):
+        movement_input = ""
+        movement_commands = ["1", "2", "3", "4", "5"]
+        while movement_input not in movement_commands:
+            movement_input = input("What way would you like to move? UP[1] DOWN[2] LEFT[3] RIGHT[4] CANCEL[5] ")
+            if movement_input in movement_commands:
+                player.move(movement_input)
+            else:
+                print("Please enter a valid movement command!")
+        print()
 
 map = Map(5,18)
 map.display_map()
+
+player = Player("Billy Bob", Player_Class.WARRIOR)
+player.inventory = [Item(), Item(), Item(), Item(), Item()]
+player.display_inventory()
+player.display_player_info()
+
+game = Game(player)
+while game.is_running:
+    game.player_input()
+
+
 
